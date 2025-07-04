@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Welcome, {{ user.username }}</h1>
+<h2>Your Links</h2>
+<form id="linksForm">
+    {% for i in range(2) %}
+    <div>
+        <input type="text" name="links[{{ i }}].title" placeholder="Link title" 
+               value="{{ user.links[i].title if user.links and i < user.links|length else '' }}">
+        <input type="url" name="links[{{ i }}].url" placeholder="https://example.com" 
+               value="{{ user.links[i].url if user.links and i < user.links|length else '' }}">
+    </div>
+    {% endfor %}
+    <button type="submit">Save Links</button>
+</form>
+<p>Your profile: <a href="/{{ user.username }}">/{{ user.username }}</a></p>
+
+<script>
+document.getElementById('linksForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Collect form data
+    const links = [];
+    for (let i = 0; i < 2; i++) {
+        const title = document.querySelector(`input[name="links[${i}].title"]`).value;
+        const url = document.querySelector(`input[name="links[${i}].url"]`).value;
+        if (title && url) {
+            links.push({title, url});
+        }
+    }
+    
+    // Get token from cookies
+    const token = document.cookie.split('; ')
+        .find(row => row.startsWith('access_token='))
+        ?.split('=')[1];
+    
+    try {
+        const response = await fetch('/links', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(links)  // Send as proper JSON array
+        });
+        
+        if (response.ok) {
+            alert('Links saved successfully!');
+        } else {
+            const error = await response.json();
+            alert(`Error: ${error.detail || 'Unknown error'}`);
+        }
+    } catch (error) {
+        alert('Network error: ' + error.message);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ user.username }}'s Links</h1>
+<div class="links">
+    {% for link in user.links %}
+    <a href="/link_click/{{ user.username }}/{{ loop.index0 }}" 
+       class="link" 
+       onclick="trackClick('{{ user.username }}', '{{ loop.index0 }}')">
+        {{ link.title }}
+    </a>
+    {% endfor %}
+</div>
+<p>{{ user.links[0].clicks + user.links[1].clicks }} total clicks</p>
+
+<script>
+function trackClick(username, index) {
+    fetch(`/link_click/${username}/${index}`, {method: 'POST'});
+}
+</script>
+{% endblock %}

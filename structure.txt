@@ -1,0 +1,15 @@
+linktree-clone/
+├── app/
+│   ├── __init__.py
+│   ├── main.py          # FastAPI app and routes
+│   ├── models.py        # Pydantic and database models
+│   ├── database.py      # MongoDB connection
+│   ├── auth.py          # Authentication utilities
+│   └── templates/       # Simple HTML templates
+│       ├── base.html
+│       ├── dashboard.html
+│       ├── login.html
+│       ├── profile.html
+│       └── register.html
+├── requirements.txt
+└── README.md
